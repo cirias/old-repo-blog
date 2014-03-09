@@ -1,0 +1,13 @@
+<a class="btn pull-right" data-toggle="modal" data-target="#deleteAlert_<%= article._id %>" href="#">Delete</a>
+<a class="btn pull-right" href="/<%= article.title %>/edit">Edit</a>
+<div class="modal fade in" id="deleteAlert_<%= article._id %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="alert alert-danger">
+      <h4>You wanna delete <%= article.title %>!?</h4>
+      <p>This operation can not be revoked.</p>
+      <p>
+        <a type="button" class="btn btn-danger" href="/<%= article.title %>/delete">Delete it!</a>
+      </p>
+      </div>
+  </div>
+</div>
