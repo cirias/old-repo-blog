@@ -2,14 +2,15 @@ var Article = require('./../models/Article.js');
 var Tag = require('./../models/Tag.js');
 
 exports.post = function(req, res){
-	var showDO = !!req.session.username;
+	var logged = !!req.session.username;
 	if (req.session.username) {
 		Tag.selectAll(function(err, tags){
 			Article.initPostData();
-			res.render('postArticle', {
+			res.render('post', {
 				tags: tags,
-				showDO: showDO,
-				title: 'Post'
+				logged: logged,
+				title: 'Post',
+				show: {sidebar: true}
 			});
 		});
 	} else {
@@ -38,7 +39,7 @@ exports.upload = function(req, res){
 }
 
 exports.show = function(req, res){
-	var showDO = !!req.session.username;
+	var logged = !!req.session.username;
 	Article.selectArticle(req, function(article, err){
 		if (!article) res.redirect('/');
 		if(err) {
@@ -48,8 +49,9 @@ exports.show = function(req, res){
 				res.render('anArticle', {
 					article: article,
 					tags: tags,
-					showDO: showDO,
-					title: article.title
+					logged: logged,
+					title: article.title,
+					show: {sidebar: true}
 				});
 			});
 		}
@@ -65,7 +67,7 @@ exports.byTag = function(req, res){
 }
 
 function showArticlesWith(showMethod, req, res, action){
-	var showDO = !!req.session.username;
+	var logged = !!req.session.username;
 	showMethod(req, function(articles, pagesNum, err){
 		if (articles.length == 0) res.redirect('/');
 		if(err) {
@@ -75,11 +77,12 @@ function showArticlesWith(showMethod, req, res, action){
 				res.render('articleFlow', {
 					articles: articles,
 					tags: tags,
-					showDO: showDO,
+					logged: logged,
 					pagesNum: pagesNum,
 					currentPage: typeof req.params.no == 'undefined'? 0: req.params.no,
 					action: action,
-					title: 'Sight of Sirius'
+					title: 'Sight of Sirius',
+					show: {sidebar: true}
 				});
 			});
 		}

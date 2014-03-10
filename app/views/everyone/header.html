@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <title><%= title %></title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Blog of Sirius">
+    <meta name="author" content="Sirius">
+    <link rel="shortcut icon" href="\public\images\favicon.ico">
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/styles/main.css">
+    <link rel="stylesheet" href="/styles/blog.css">
+    <link rel="stylesheet" href="/styles/post.css">
+</head>
+<body ng-app="app">
+
+<% include nav.html %>
+    
+<div class="container" ng-init="tags = <%=JSON.stringify(tags) %>">
+
+    <div class="blog-header">
+        <h1 class="blog-title">Sirius log</h1>
+        <p class="lead blog-description">La la la la la la la la lol.</p>
+    </div>
+    
+    <div class="row">
+        <div class="col-sm-9 blog-main">

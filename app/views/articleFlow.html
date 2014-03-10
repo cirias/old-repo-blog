@@ -1,69 +1,10 @@
-<% include header.html 							%>
+<% include everyone/header.html 				%>
 
 <% for (i in articles){							%>
 <%		article = articles[i]					%>
-<%		include article.html					%>
+<%		include everyone/article.html			%>
 <% }  											%>
 
-<div class="center">
-	<ul class="pagination">
-	<% if (currentPage<3) { %>
+<% include everyone/pager.html 					%>
 
-	<% 	if (0 == currentPage) { %>
-			<li class="disabled"><a>&laquo;</a></li>
-	<% 	} else { %>
-				<li><a href="<%= action %>/<%= currentPage - 1 %>">&laquo;</a></li>
-	<%	} %>
-
-	<% 	for(i=0; i<(pagesNum<5 ? pagesNum : 5); i++) { %>
-	<% 		if (i != currentPage) { %>
-				<li><a href="<%= action %>/<%= i %>"><%= i + 1 %></a></li>
-	<% 		} else { %>
-				<li class="active"><a><%= i + 1 %> <span class="sr-only">(current)</span></a></li>
-	<%		} %>
-	<%	} %>
-
-	<%	if (pagesNum>4) { %>
-				<li><a>…</a></li>
-	<%	} %>
-
-	<%	if (pagesNum - 1 > currentPage) { %>
-				<li><a href="<%= action %>/<%= parseInt(currentPage, 10) + 1 %>">&raquo;</a></li>
-	<% 	} else { %>
-				<li class="disabled"><a>&raquo;</a></li>
-	<%	} %>
-
-	<% } else if (currentPage+2 < pagesNum-1) { %>
-		<li><a href="<%= action %>/<%= currentPage - 1 %>">&laquo;</a></li>
-
-	<% 	for(i=currentPage-2; i<currentPage+2; i++) { %>
-	<% 		if (i != currentPage) { %>
-				<li><a href="<%= action %>/<%= i %>"><%= i + 1 %></a></li>
-	<% 		} else { %>
-				<li class="active"><a><%= i + 1 %> <span class="sr-only">(current)</span></a></li>
-	<%		} %>
-	<%	} %>
-
-		<li><a>…</a></li>
-		<li><a href="<%= action %>/<%= parseInt(currentPage, 10) + 1 %>">&raquo;</a></li>
-	<% } else { %>
-		<li><a href="<%= action %>/<%= currentPage - 1 %>">&laquo;</a></li>
-
-	<% 	for(i=pagesNum-5; i<pagesNum; i++) { %>
-	<% 		if (i != currentPage) { %>
-				<li><a href="<%= action %>/<%= i %>"><%= i + 1 %></a></li>
-	<% 		} else { %>
-				<li class="active"><a><%= i + 1 %> <span class="sr-only">(current)</span></a></li>
-	<%		} %>
-	<%	} %>
-
-	<%	if (pagesNum - 1 > currentPage) { %>
-				<li><a href="<%= action %>/<%= parseInt(currentPage, 10) + 1 %>">&raquo;</a></li>
-	<% 	} else { %>
-				<li class="disabled"><a>&raquo;</a></li>
-	<%	} %>
-	<% } %>
-	</ul>
-</div>
-
-<% include footer.html 							%>
+<% include everyone/footer.html 				%>
