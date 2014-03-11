@@ -1,9 +1,8 @@
 var express = require('express')
     , path = require('path')
     , ejs = require('ejs')
-    , article = require('./routes/article')
-    , user = require('./routes/user')
     , admin = require('./routes/admin')
+    , everyone = require('./routes/everyone')
     , app = express()
 //    , SessionStore = require("session-mongoose")(express)
     , server = require('http').createServer(app);
@@ -25,20 +24,20 @@ if (app.get('env') === 'development') {
     app.use(express.errorHandler());
 }
 
-app.get('/',  article.home);
-app.post('/', user.doSignin);
-app.get('/post', article.post);//增加
-app.post('/post', article.upload);//增加
-app.get('/write', admin.write);
-app.post('/save', article.save);
-app.post('/image/upload',article.uploadImage);
-app.get('/signin', user.signin);
-app.get('/:title', article.show);
-app.get('/page/:no', article.home);
-app.get('/tag/:tag', article.byTag);
-app.get('/tag/:tag/:no', article.byTag);
-app.get('/:title/delete', article.delete);
-app.get('/:title/edit', article.edit);
+app.get('/',  everyone.getAllArticles);//----------
+app.post('/', admin.postLogin);
+app.get('/post', admin.getPost);//----------
+app.post('/post', admin.postPost);//----------
+app.get('/write', admin.getWrite);//----------
+app.post('/save', admin.postWrite);
+app.post('/image/upload',admin.postImage);
+app.get('/signin', admin.getLogin);
+app.get('/:title', everyone.getAnArticle);//----------
+app.get('/page/:no', everyone.getAllArticles);//----------
+app.get('/tag/:tag', everyone.getTagArticles);//----------
+app.get('/tag/:tag/:no', everyone.getTagArticles);//----------
+app.get('/:title/delete', admin.getDelete);//--------------
+app.get('/:title/edit', admin.getEdit);//---------------------
 
 server.listen(app.get('port'), function () {
     console.log('Express server listening on port ' + app.get('port'));

@@ -1,9 +1,10 @@
-
+var async = require('async');
 var fs = require('fs');
 var path = require('path');
 var guid = require('./Guid');
 var mongodb = require('./mongodb');
 var markdown = require( "markdown" ).markdown;
+
 var Schema = mongodb.mongoose.Schema;
 var ArticleSchema = new Schema(
     {
@@ -19,12 +20,49 @@ var Article = mongodb.mongoose.model("Article", ArticleSchema);
 var ArticleDAO = function(){};
 module.exports = new ArticleDAO();
 
+//查询
+var limition = 5;
 
-var limition = 2;
+ArticleDAO.prototype.GetPageNum = function(params, callback) {
+	Article.count(params).exec(function(err, count){
+		callback(err, Math.ceil(count/limition));
+	});
+}
+
+ArticleDAO.prototype.SelectOne = function(req, callback){
+	var title = req.params.title;
+	console.log(title);
+
+	Article.findOne({'title': title}, function(err, article){
+		callback(err, article);
+	});
+}
+
+ArticleDAO.prototype.SelectArray = function(req, params, callback) {
+	var no = req.params.no;
+	no = typeof no !== 'undefined' ? no : 0;
+
+	Article.find(params).sort({date: '-1'}).skip(no * limition).limit(limition).exec(function(err, articles){
+		callback(err, articles);
+	});
+}
+
+//新增
 var imageDir = "";
-var articleID = "";
 
-ArticleDAO.prototype.upload = function(req, callback){
+function postVerification(req) {
+	var err = "";
+	if (!req.body.title) err += 'Missing title.';
+	if (!req.body.tags) err += 'Missing tags.';
+	if (!req.body.hidden) err += 'Missing hidden.';
+	return err;
+}
+
+ArticleDAO.prototype.InitPostEnvir = function() {
+	imageDir = "";
+}
+
+ArticleDAO.prototype.AddPost = function(req, callback){
 	if (postVerification(req)) {
 		callback(err);
 		return;
@@ -32,14 +70,14 @@ ArticleDAO.prototype.upload = function(req, callback){
 
 	Article.findOne({'title': req.body.title}, 'title', function(err, article){
 		if (article) callback(new Error('Article title exist.'));
-		else if (!req.files.htmlFile.path) callback(new Error('No uploaded file.'));
+		else if (!req.files.htmlFile.path) callback(new Error('Upload file missing.'));
 		else{
 			var newArticle = new Article({
 				title : req.body.title,
 				tags : req.body.tags,
 				hidden : req.body.hidden,
 				content : fs.readFileSync(req.files.htmlFile.path, "utf8"),
-				dir : "/public/images/" + Date.now() + req.body.title
+				dir : './app/public/images/'+guid.create()
 			});
 
 			newArticle.save(function(err){
@@ -49,53 +87,33 @@ ArticleDAO.prototype.upload = function(req, callback){
 	});
 }
 
-ArticleDAO.prototype.selectArticle = function(req, callback){
-	var title = req.params.title;
-	var contents = "";
-	Article.findOne({'title': title}, function(err, article){
-		callback(article, err);
-	});
-}
+ArticleDAO.prototype.AddWrite = function(req, callback) {
+	if (postVerification(req)) {
+		callback(err);
+		return;
+	}
 
-ArticleDAO.prototype.selectArticlesByNo = function(req, callback){
-	var no = req.params.no;
-	no = typeof no !== 'undefined' ? no : 0;
-	var contents = "";
-	Article.find({}).sort({date: '-1'}).skip(no * limition).limit(limition).exec(function(err, articles){
-		Article.count({}).exec(function(err, count){
-			callback(articles, Math.ceil(count/limition), err);
-		});
-	});
-}
+	Article.findOne({'title': req.body.title}, 'title', function(err, article){
+		if (article) callback(new Error('Article title exist.'));
+		else{
+			console.log(markdown.toHTML(req.body.content));
+			var newArticle = new Article({
+				title : req.body.title,
+				tags : req.body.tags,
+				hidden : req.body.hidden,
+				content : markdown.toHTML(req.body.content),
+				dir : imageDir
+			});
 
-ArticleDAO.prototype.selectArticlesByTag = function(req, callback){
-	var no = req.params.no;
-	var tag = req.params.tag;
-	no = typeof no !== 'undefined' ? no : 0;
-	var contents = "";
-	Article.find({tags: tag}).sort({date: '-1'}).skip(no * limition).limit(limition).exec(function(err, articles){
-		Article.count({tags: tag}).exec(function(err, count){
-			callback(articles, Math.ceil(count/limition), err);
-		});
-	});
-}
-
-ArticleDAO.prototype.delete = function(req, callback){
-	Article.findOne({title: req.params.title}, function(err, article){
-		if (fs.existsSync(article.dir)) {
-			deleteFolderRecursive(article.dir);
+			newArticle.save(function(err){
+				callback(err);
+				imageDir = "";
+			});
 		}
-		Article.remove({title: req.params.title}, function(err){
-			callback(err);
-		});
-	})
+	});
 }
 
-ArticleDAO.prototype.initPostData = function() {
-	imageDir = "";
-}
-
-ArticleDAO.prototype.uploadImage = function(req, callback) {
+ArticleDAO.prototype.SaveImage = function(req, callback) {
 	var image = req.files.image;
 	var contentType = image.type.split('/')[0];
 
@@ -131,47 +149,16 @@ ArticleDAO.prototype.uploadImage = function(req, callback) {
     });
 }
 
-ArticleDAO.prototype.save = function(req, callback) {
-	if (postVerification(req)) {
-		callback(err);
-		return;
-	}
-
-	Article.findOne({'title': req.body.title}, 'title', function(err, article){
-		if (article) callback(new Error('Article title exist.'));
-		else{
-			console.log(markdown.toHTML(req.body.content));
-			var newArticle = new Article({
-				title : req.body.title,
-				tags : req.body.tags,
-				hidden : req.body.hidden,
-				content : markdown.toHTML(req.body.content),
-				dir : imageDir
-			});
-
-			newArticle.save(function(err){
-				callback(err);
-				imageDir = "";
-			});
+//删除
+ArticleDAO.prototype.Delete = function(req, callback){
+	Article.findOne({title: req.params.title}, function(err, article){
+		if (fs.existsSync(article.dir)) {
+			deleteFolderRecursive(article.dir);
 		}
-	});
-}
-
-ArticleDAO.prototype.getArticleData = function(req) {
-	var title = req.params.title;
-	Article.findOne({'title': title}, function(err, article){
-		imageDir = article.dir;
-		articleID = article._id;
-		return article;
-	});
-}
-
-function postVerification(req) {
-	var err = "";
-	if (!req.body.title) err += 'Missing title.';
-	if (!req.body.tags) err += 'Missing tags.';
-	if (!req.body.hidden) err += 'Missing hidden.';
-	return err;
+		Article.remove({title: req.params.title}, function(err){
+			callback(err);
+		});
+	})
 }
 
 function deleteFolderRecursive(path) {
@@ -188,4 +175,17 @@ function deleteFolderRecursive(path) {
         });
         fs.rmdirSync(path);
     }
-};
+}
+
+//修改
+var articleID = "";
+
+ArticleDAO.prototype.getArticleData = function(req) {
+	var title = req.params.title;
+	Article.findOne({'title': title}, function(err, article){
+		imageDir = article.dir;
+		articleID = article._id;
+		return article;
+	});
+}
+

@@ -1,3 +1,4 @@
+var async = require('async');
 var mongodb = require('./mongodb');
 var Schema = mongodb.mongoose.Schema;
 
@@ -12,16 +13,24 @@ var Tag = mongodb.mongoose.model('Tag', TagSchema);
 var TagDAO = function(){};
 module.exports = new TagDAO();
 
-TagDAO.prototype.selectAll = function(callback){
+TagDAO.prototype.SelectAll = function(callback){
 	Tag.find({}).exec(function(err, tags){
 		callback(err, tags);
 	});
 }
 
-TagDAO.prototype.save = function(tags, callback){
-	if (typeof tags != 'string')
-		for (var i in tags) saveUnexistTag(tags[i], callback);
-	else saveUnexistTag(tags, callback);
+TagDAO.prototype.Add = function(tags, callback){
+	if (typeof tags != 'string') {
+		async.eachSeries(tags, function(item, callback) {
+		    saveUnexistTag(item, function(err) {
+		    	callback(err);
+		    });
+		}, function(err) {
+		    callback(err);
+		});
+	} else {
+		saveUnexistTag(tags, callback);
+	}
 }
 
 function saveUnexistTag(tag, callback){
