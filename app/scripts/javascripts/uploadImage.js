@@ -1,4 +1,8 @@
+
+
 $('#image').change(function(){
+  edited = true;
+  
   var file = this.files[0];
   var name = file.name;
   var size = file.size;
@@ -57,8 +61,4 @@ function appendPath(path) {
     $('#imagePathList').append('<li><small>'+path.replace('./app/','/')+'</small></li>');
 }
 
-function closeEditorWarning(){
-    return 'It looks like you have been editing something -- if you leave before submitting your changes will be lost.'
-}
 
-window.onbeforeunload = closeEditorWarning

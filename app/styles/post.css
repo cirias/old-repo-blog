@@ -1,10 +1,10 @@
 body {
 	padding-top: 50px;
 }
-.post {
+.frame {
 	padding: 40px 15px;
 }
-.upload {
+.manage {
 	margin-left: 0;
 	margin-right: 0;
 	background-color: #fff;
@@ -15,12 +15,9 @@ body {
 	position: relative;
 	padding: 45px 15px 15px;
 	margin: 0 -15px 15px;
-	border-right-style: solid;
-	border-bottom-style: solid;
-	border-left-style: solid;
+	border-style: solid;
 }
-.upload:after {
-	content: "Upload";
+.manage:after {
 	position: absolute;
 	top: 15px;
 	left: 15px;
@@ -29,6 +26,15 @@ body {
 	color: #bbb;
 	text-transform: uppercase;
 	letter-spacing: 1px;
+}
+.post:after {
+	content: "post";
+}
+.write:after {
+	content: "write";
+}
+.edit:after {
+	content: "edit";
 }
 .details {
 	margin-top: -16px;
@@ -44,4 +50,15 @@ body {
 	border-bottom-left-radius: 4px;
 	border-bottom-right-radius: 4px;
 	border-top-color: #fff;
+}
+.preview {
+	background-color: #fff;
+	border-width: 1px;
+	border-color: #ddd;
+	border-radius: 4px 4px 4px 4px;
+	box-shadow: none;
+	position: relative;
+	padding: 15px 15px 15px;
+	margin-top: 15px;
+	border-style: solid;
 }

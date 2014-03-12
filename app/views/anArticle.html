@@ -1,15 +1,18 @@
 <% include everyone/header.html 							%>
 
-<div class="blog-post">
-    <h2 class="blog-post-title"><%= article.title %></h2>
+<div class="container" ng-init="tags = <%=JSON.stringify(tags) %>">
+    <div class="row">
+        <div class="col-sm-9 blog-main">
+			<div class="blog-post">
+			    <h2 class="blog-post-title"><%= article.title %></h2>
 
-    <% if (logged){               %>
-    <% include admin/delete&edit.html   %>
-    <% }                          %>
-    
-    <p class="blog-post-meta"><%= article.date.toDateString() %></p>
-	<%- article.content %>
-</div>
+			    <% if (logged){               %>
+			    <% include admin/delete&edit.html   %>
+			    <% }                          %>
+			    
+			    <p class="blog-post-meta"><%= article.date.toDateString() %></p>
+				<%- article.content %>
+			</div>
 
 <% include everyone/disqus.html                          	%>
 

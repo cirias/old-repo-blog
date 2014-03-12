@@ -31,7 +31,6 @@ ArticleDAO.prototype.GetPageNum = function(params, callback) {
 
 ArticleDAO.prototype.SelectOne = function(req, callback){
 	var title = req.params.title;
-	console.log(title);
 
 	Article.findOne({'title': title}, function(err, article){
 		callback(err, article);
@@ -63,14 +62,15 @@ ArticleDAO.prototype.InitPostEnvir = function() {
 }
 
 ArticleDAO.prototype.AddPost = function(req, callback){
-	if (postVerification(req)) {
+	var err = postVerification(req);
+	if (err) {
 		callback(err);
 		return;
 	}
 
 	Article.findOne({'title': req.body.title}, 'title', function(err, article){
-		if (article) callback(new Error('Article title exist.'));
-		else if (!req.files.htmlFile.path) callback(new Error('Upload file missing.'));
+		if (article) callback('Article title exist.');
+		else if (!req.files.htmlFile.path) callback('Upload file missing.');
 		else{
 			var newArticle = new Article({
 				title : req.body.title,
@@ -88,13 +88,14 @@ ArticleDAO.prototype.AddPost = function(req, callback){
 }
 
 ArticleDAO.prototype.AddWrite = function(req, callback) {
-	if (postVerification(req)) {
+	var err = postVerification(req);
+	if (err) {
 		callback(err);
 		return;
 	}
 
 	Article.findOne({'title': req.body.title}, 'title', function(err, article){
-		if (article) callback(new Error('Article title exist.'));
+		if (article) callback('Article title exist.');
 		else{
 			console.log(markdown.toHTML(req.body.content));
 			var newArticle = new Article({

@@ -20,6 +20,11 @@ TagDAO.prototype.SelectAll = function(callback){
 }
 
 TagDAO.prototype.Add = function(tags, callback){
+	if (!tags) {
+		callback('No tags.');
+		return;
+	}
+
 	if (typeof tags != 'string') {
 		async.eachSeries(tags, function(item, callback) {
 		    saveUnexistTag(item, function(err) {

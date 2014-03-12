@@ -29,7 +29,7 @@ app.post('/', admin.postLogin);
 app.get('/post', admin.getPost);//----------
 app.post('/post', admin.postPost);//----------
 app.get('/write', admin.getWrite);//----------
-app.post('/save', admin.postWrite);
+app.post('/write', admin.postWrite);
 app.post('/image/upload',admin.postImage);
 app.get('/signin', admin.getLogin);
 app.get('/:title', everyone.getAnArticle);//----------

@@ -1,23 +1,32 @@
 <% include everyone/header.html %>
-<div class="post" ng-controller="TagsCtrl">
-  <div class="upload" id="upload">
-    <form class="form-horizontal" role="form" action="/post" method="post" enctype="multipart/form-data">
+<% include admin/titleformange.html %>
+<% include admin/alert.html %>
+
+<div class="frame" ng-controller="TagsCtrl">
+  <div class="manage post" id="upload">
+    <form class="form-horizontal" role="form" id="articleForm" enctype="multipart/form-data">
       <div class="form-group">
-        <label for="InputFile" class="col-sm-3 control-label">File input</label>
-        <div class="col-sm-9">
-          <input type="file" id="InputFile" name="htmlFile">
+        <label for="InputFile" class="col-sm-1 control-label">File</label>
+        <div class="col-sm-10 col-sm-offset-1">
+          <label class="file-inline">
+            <input type="file" id="InputFile" name="htmlFile">
+          </label>
+          <label class="btn-inline pull-right">
+            <button id="save" type="submit" class="btn btn-primary" >Upload</button>
+          </label>
           <p class="help-block">Choose your artilce file.</p>
         </div>
       </div>
       <div class="form-group">
-        <label for="inputTitle" class="col-sm-3 control-label">Title</label>
-        <div class="col-sm-9">
+        <label for="inputTitle" class="col-sm-1 control-label">Title</label>
+        <div class="col-sm-10 col-sm-offset-1">
           <input type="text" class="form-control" id="inputTitle" name="title" placeholder="Title">
+          <p class="help-block">Input the title of this article.</p>
         </div>
       </div>
       <div class="form-group">
-        <label for="SelectTag" class="col-sm-3 control-label">Select Tags</label>
-        <div class="col-sm-9" id="SelectTag">
+        <label for="SelectTag" class="col-sm-1 control-label">Tags</label>
+        <div class="col-sm-10 col-sm-offset-1" id="SelectTag">
           <label class="checkbox-inline" ng-repeat="tag in tags">
             <input type="checkbox" name="tags" value="{{ tag.name }}">{{ tag.name }}
           </label>
@@ -27,26 +36,25 @@
           <label class="btn-inline">
             <button type="button" class="btn btn-default btn-sm" ng-click="addTag()">Add</button>
           </label>
-          <p class="help-block">Select some tags for the artilce.</p>
+          <p class="help-block">Select or create some tags for the artilce.</p>
         </div>
       </div>
       <div class="form-group">
-        <label for="inputRadio" class="col-sm-3 control-label">Hide or Not</label>
-        <div class="col-sm-9" class="inputRadio">
+        <label for="inputRadio" class="col-sm-1 control-label">Hidden</label>
+        <div class="col-sm-10 col-sm-offset-1" class="inputRadio">
           <label class="radio-inline">
             <input type="radio" name="hidden" id="radioHide" value="TRUE"> Hide
           </label>
           <label class="radio-inline">
             <input type="radio" name="hidden" id="radioNotHide" value="FALSE"> Not Hide
           </label>
-        </div>
-      </div>
-      <div class="form-group">
-        <div class="col-sm-offset-3 col-sm-9">
-          <button type="submit" class="btn btn-primary" >Upload</button>
+          <p class="help-block">Show the artilce to the world or not.</p>
         </div>
       </div>
     </form>
   </div>
 </div>
+<script src="/scripts/javascripts/jquery.min.js"></script>
+<script src="/scripts/javascripts/postFormData.js"></script>
+
 <% include everyone/footer.html %>

@@ -3,7 +3,7 @@
 <% include admin/alert.html %>
 
 <div class="frame" ng-controller="TagsCtrl">
-    <div class="manage write" id="write">
+    <div class="manage edit" id="edit">
       <form class="form-horizontal" id="imageForm" enctype="multipart/form-data">
         <div class="form-group">
           <label for="image" class="col-sm-1 control-label">Image</label>
@@ -24,7 +24,7 @@
           <label for="inputTitle" class="col-sm-1 control-label">Title</label>
           <div class="col-sm-10 col-sm-offset-1">
             <label class="text-inline">
-              <input type="text" class="form-control" id="inputTitle" name="title" placeholder="Title">
+              <input type="text" class="form-control" id="inputTitle" name="title" placeholder="Title" value="<%= article.title %>">
             </label>
             <label class="btn-inline pull-right">
               <button id="save" type="submit" class="btn btn-primary" >Save</button>
@@ -37,7 +37,7 @@
           <label for="SelectTag" class="col-sm-1 control-label">Tags</label>
           <div class="col-sm-10 col-sm-offset-1" id="SelectTag">
             <label class="checkbox-inline" ng-repeat="tag in tags">
-              <input type="checkbox" name="tags" value="{{ tag.name }}">{{ tag.name }}
+              <input type="checkbox" name="tags" value="{{ tag.name }}" checked="{{ tag.checked }}">{{ tag.name }}
             </label>
             <label class="text-inline">
               <input type="text" class="form-control  input-sm" id="TagText" placeholder="New Tag" ng-model="newTag">
@@ -53,10 +53,10 @@
           <label for="inputRadio" class="col-sm-1 control-label">Hidden</label>
           <div class="col-sm-10 col-sm-offset-1" class="inputRadio">
             <label class="radio-inline">
-              <input type="radio" name="hidden" id="radioHide" value="TRUE"> Hide
+              <input type="radio" name="hidden" id="radioHide" value="TRUE" <%= hidden.hide %>> Hide
             </label>
             <label class="radio-inline">
-              <input type="radio" name="hidden" id="radioNotHide" value="FALSE"> Not Hide
+              <input type="radio" name="hidden" id="radioNotHide" value="FALSE" <%= hidden.nothide %>> Not Hide
             </label>
             <p class="help-block">Show the artilce to the world or not.</p>
           </div>
@@ -75,7 +75,7 @@
         <div class="form-group">
           <label for="text-input" class="col-sm-1 control-label">Body</label>
           <div class="col-sm-10 col-sm-offset-1">
-            <textarea class="form-control" id="text-input" name="content" oninput="this.editor.update()" rows="10"></textarea>
+            <textarea class="form-control" id="text-input" name="content" oninput="this.editor.update()" rows="10"><%= body %></textarea>
           </div>
         </div>
 

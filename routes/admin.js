@@ -1,4 +1,5 @@
 var async = require('async');
+var toMarkdown = require('to-markdown').toMarkdown;
 var Article = require('./../models/Article.js');
 var Tag = require('./../models/Tag.js');
 var User = require('./../models/User.js');
@@ -9,7 +10,7 @@ var baduserMsg = 'You are not authorized to do this.';
 exports.getPost = function(req, res) {
 	var logged = !!req.session.username;
 	if (!req.session.username) {
-		res.send(baduserMsg);
+		res.send({success: false, err: baduserMsg});
 		return;
 	}
 
@@ -32,7 +33,7 @@ exports.getPost = function(req, res) {
 exports.getWrite = function(req, res) {
 	var logged = !!req.session.username;
 	if (!req.session.username) {
-		res.send(baduserMsg);
+		res.send({success: false, err: baduserMsg});
 		return;
 	}
 
@@ -55,17 +56,58 @@ exports.getWrite = function(req, res) {
 exports.getEdit = function(req, res) {
 	var logged = !!req.session.username;
 	if (!req.session.username) {
-		res.send(baduserMsg);
+		res.send({success: false, err: baduserMsg});
 		return;
 	}
 
-	res.send('Opps! Where are my hands?!');
+	async.parallel({
+	    tags: function(cb){
+	    	Tag.SelectAll(cb);
+	    },
+	    article: function(cb){
+	    	Article.SelectOne(req, cb);
+	    }
+	}, function(err, results) {
+		var tags = [{}];
+		var hidden = {
+			hide: '',
+			nothide: ''
+		};
+
+		async.each(results.tags, function(tag, callback) {
+			if (results.article.tags.indexOf(tag.name) >= 0) {
+				tag..checked = 'checked';
+				console.log(tag);
+				tags.push(tag);
+				console.log(JSON.stringify(tags));
+			}
+			console.log(JSON.stringify(tags));
+			callback();
+		}, function() {
+			if (results.article.hidden) {
+				hidden.hide = 'checked';
+			} else {
+				hidden.nothide = 'checked';
+			}
+
+			console.log(JSON.stringify(tags));
+			res.render('edit', {
+				article: results.article,
+				tags: results.tags,
+				hidden: hidden,
+				body: toMarkdown(results.article.content),
+				logged: logged,
+				title: 'Edit - ' + results.article.title,
+				show: {sidebar: true}
+			});
+		});
+	});
 }
 
 exports.getDelete = function(req, res) {
 	var logged = !!req.session.username;
 	if (!req.session.username) {
-		res.send(baduserMsg);
+		res.send({success: false, err: baduserMsg});
 		return;
 	}
 
@@ -82,7 +124,7 @@ exports.getDelete = function(req, res) {
 exports.postPost = function(req, res) {
 	var logged = !!req.session.username;
 	if (!req.session.username) {
-		res.send(baduserMsg);
+		res.send({success: false, err: baduserMsg});
 		return;
 	}
 
@@ -105,7 +147,7 @@ exports.postPost = function(req, res) {
 exports.postWrite = function(req, res) {
 	var logged = !!req.session.username;
 	if (!req.session.username) {
-		res.send(baduserMsg);
+		res.send({success: false, err: baduserMsg});
 		return;
 	}
 
@@ -128,7 +170,7 @@ exports.postWrite = function(req, res) {
 exports.postEdit = function(req, res) {
 	var logged = !!req.session.username;
 	if (!req.session.username) {
-		res.send(baduserMsg);
+		res.send({success: false, err: baduserMsg});
 		return;
 	}
 }
@@ -136,7 +178,7 @@ exports.postEdit = function(req, res) {
 exports.postImage = function(req, res) {
 	var logged = !!req.session.username;
 	if (!req.session.username) {
-		res.send(baduserMsg);
+		res.send({success: false, err: baduserMsg});
 		return;
 	}
 	Article.SaveImage(req, function(err, path){
