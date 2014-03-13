@@ -20,6 +20,18 @@ exports.getAllArticles = function(req, res) {
 	    	Article.GetArchives(cb);
 	    }
 	},function(err, results) {
+		if (!results.articles) {
+			res.render('notfound', {
+				content: 'Not Found 404',
+				tags: results.tags,
+				archives: results.archives,
+				logged: logged,
+				title: 'Not Found 404',
+				show: {sidebar: true}
+			});
+			return;
+		}
+
 		res.render('articleFlow', {
 			articles: results.articles,
 			pagesNum: results.pageNum,
@@ -51,6 +63,18 @@ exports.getTagArticles = function(req, res) {
 	    	Article.GetArchives(cb);
 	    }
 	},function(err, results) {
+		if (!results.articles) {
+			res.render('notfound', {
+				content: 'Not Found 404',
+				tags: results.tags,
+				archives: results.archives,
+				logged: logged,
+				title: 'Not Found 404',
+				show: {sidebar: true}
+			});
+			return;
+		}
+
 		res.render('articleFlow', {
 			articles: results.articles,
 			pagesNum: results.pageNum,
@@ -84,6 +108,18 @@ exports.getArchiveArticles = function(req, res) {
 	    	Article.GetArchives(cb);
 	    }
 	},function(err, results) {
+		if (!results.articles) {
+			res.render('notfound', {
+				content: 'Not Found 404',
+				tags: results.tags,
+				archives: results.archives,
+				logged: logged,
+				title: 'Not Found 404',
+				show: {sidebar: true}
+			});
+			return;
+		}
+
 		res.render('articleFlow', {
 			articles: results.articles,
 			pagesNum: results.pageNum,
@@ -112,12 +148,46 @@ exports.getAnArticle = function(req, res) {
 	    	Article.GetArchives(cb);
 	    }
 	}, function(err, results) {
+		if (!results.article) {
+			res.render('notfound', {
+				content: 'Not Found 404',
+				tags: results.tags,
+				archives: results.archives,
+				logged: logged,
+				title: 'Not Found 404',
+				show: {sidebar: true}
+			});
+			return;
+		}
+
 		res.render('anArticle', {
 			article: results.article,
 			tags: results.tags,
 			archives: results.archives,
 			logged: logged,
 			title: results.article.title,
+			show: {sidebar: true}
+		});
+	});
+}
+
+exports.notfound = function(req, res) {
+	var logged = !!req.session.username;
+
+	async.parallel({
+	    tags: function(cb){
+	    	Tag.SelectAll(cb);
+	    },
+	    archives: function(cb){
+	    	Article.GetArchives(cb);
+	    }
+	}, function(err, results) {
+		res.render('notfound', {
+			content: 'Not Found 404',
+			tags: results.tags,
+			archives: results.archives,
+			logged: logged,
+			title: 'Not Found 404',
 			show: {sidebar: true}
 		});
 	});

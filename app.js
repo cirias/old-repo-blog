@@ -59,7 +59,7 @@ app.get('/:title/delete', admin.getDelete);
 app.get('/:title/edit', admin.getEdit);
 app.get('/archive/:year/:month', everyone.getArchiveArticles);
 if (process.env.NODE_ENV == 'production') {
-	app.get('*', site.notfound);
+	app.get('*', everyone.notfound);
 }	
 
 server.listen(app.get('port'), function () {

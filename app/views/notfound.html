@@ -1,0 +1,10 @@
+<% include everyone/header.html 							%>
+
+<div class="container" ng-init="tags = <%=JSON.stringify(tags)%>; archives = <%=JSON.stringify(archives)%>;">
+    <div class="row">
+        <div class="col-sm-9 blog-main">
+			<div class="blog-post">
+			    <h2 class="blog-a-post-title"><%= content %></h2>
+			</div>
+
+<% include everyone/footer.html 							%>
