@@ -46,6 +46,36 @@ ArticleDAO.prototype.SelectArray = function(req, params, callback) {
 	});
 }
 
+var monthName = ['January ', 'February ', 'March ', 'April ', 'May ', 'June ', 'July ', 'August ', 'September ', 'October ', 'November ', 'December '];
+
+ArticleDAO.prototype.GetArchives = function(callback) {
+	Article.find({}).sort({date: '-1'}).exec(function(err, articles) {
+		var archives = [];
+		for (var i = 0; i < articles.length; i++) {
+			var month = monthName[articles[i].date.getMonth()];
+			var year = articles[i].date.getFullYear();
+			var date = month + year;
+			var has = false;
+
+			for (var j = 0; j < archives.length; j++) {
+				if (archives[j].date == date) {
+					has = true;
+					break;
+				}
+			}
+
+			if (!has) {
+				archives.push({
+					date: date,
+					month: articles[i].date.getMonth() + 1,
+					year: articles[i].date.getFullYear()
+				});
+			}
+		}
+		callback(err, archives);
+	})
+}
+
 //新增
 var imageDir = "";
 
@@ -75,6 +105,7 @@ ArticleDAO.prototype.AddPost = function(req, callback){
 			var newArticle = new Article({
 				title : req.body.title,
 				tags : req.body.tags,
+				date : (req.body.date && req.body.date.length !== 0) ? req.body.date : new Date(),
 				hidden : req.body.hidden,
 				content : fs.readFileSync(req.files.htmlFile.path, "utf8"),
 				dir : './app/public/images/'+guid.create()
@@ -101,6 +132,7 @@ ArticleDAO.prototype.AddWrite = function(req, callback) {
 			var newArticle = new Article({
 				title : req.body.title,
 				tags : req.body.tags,
+				date : (req.body.date && req.body.date.length !== 0) ? req.body.date : new Date(),
 				hidden : req.body.hidden,
 				content : markdown.toHTML(req.body.content),
 				dir : imageDir

@@ -34,6 +34,14 @@
         </div>
 
         <div class="form-group">
+          <label for="date" class="col-sm-1 control-label">Date</label>
+          <div class="col-sm-10 col-sm-offset-1" id="date">
+            <input type="date" name="date" id="datePicker">
+            <p class="help-block">Pick date if the artilce was not created on today.</p>
+          </div>
+        </div>
+
+        <div class="form-group">
           <label for="SelectTag" class="col-sm-1 control-label">Tags</label>
           <div class="col-sm-10 col-sm-offset-1" id="SelectTag">
             <label class="checkbox-inline" ng-repeat="tag in tags">

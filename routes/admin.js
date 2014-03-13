@@ -19,10 +19,14 @@ exports.getPost = function(req, res) {
 	async.parallel({
 	    tags: function(cb){
 	    	Tag.SelectAll(cb);
+	    },
+	    archives: function(cb){
+	    	Article.GetArchives(cb);
 	    }
 	}, function(err, results) {
 		    res.render('post', {
 			tags: results.tags,
+			archives: results.archives,
 			logged: logged,
 			title: 'Post',
 			show: {sidebar: true}
@@ -42,10 +46,14 @@ exports.getWrite = function(req, res) {
 	async.parallel({
 	    tags: function(cb){
 	    	Tag.SelectAll(cb);
+	    },
+	    archives: function(cb){
+	    	Article.GetArchives(cb);
 	    }
 	}, function(err, results) {
 		    res.render('write', {
 			tags: results.tags,
+			archives: results.archives,
 			logged: logged,
 			title: 'Write',
 			show: {sidebar: true}
@@ -66,6 +74,9 @@ exports.getEdit = function(req, res) {
 	    },
 	    article: function(cb){
 	    	Article.getArticleData(req, cb);
+	    },
+	    archives: function(cb){
+	    	Article.GetArchives(cb);
 	    }
 	}, function(err, results) {
 		var tags = [{}];
@@ -91,6 +102,7 @@ exports.getEdit = function(req, res) {
 
 		res.render('edit', {
 			article: results.article,
+			archives: results.archives,
 			tags: tags,
 			hidden: hidden,
 			body: toMarkdown(results.article.content),
