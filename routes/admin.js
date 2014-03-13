@@ -65,7 +65,7 @@ exports.getEdit = function(req, res) {
 	    	Tag.SelectAll(cb);
 	    },
 	    article: function(cb){
-	    	Article.SelectOne(req, cb);
+	    	Article.getArticleData(req, cb);
 	    }
 	}, function(err, results) {
 		var tags = [{}];
@@ -74,32 +74,29 @@ exports.getEdit = function(req, res) {
 			nothide: ''
 		};
 
-		async.each(results.tags, function(tag, callback) {
-			if (results.article.tags.indexOf(tag.name) >= 0) {
-				tag..checked = 'checked';
-				console.log(tag);
-				tags.push(tag);
-				console.log(JSON.stringify(tags));
+		for (i = 0; i < results.tags.length; i++) {
+			tags.push(results.tags[i]);
+			if (results.article.tags.indexOf(results.tags[i].name) >= 0) {
+				tags[tags.length-1] = JSON.parse(JSON.stringify(tags[tags.length-1]).replace('}', ',"checked": true}'));
 			}
-			console.log(JSON.stringify(tags));
-			callback();
-		}, function() {
-			if (results.article.hidden) {
-				hidden.hide = 'checked';
-			} else {
-				hidden.nothide = 'checked';
-			}
+		}
 
-			console.log(JSON.stringify(tags));
-			res.render('edit', {
-				article: results.article,
-				tags: results.tags,
-				hidden: hidden,
-				body: toMarkdown(results.article.content),
-				logged: logged,
-				title: 'Edit - ' + results.article.title,
-				show: {sidebar: true}
-			});
+		tags.splice(0,1);
+
+		if (results.article.hidden) {
+			hidden.hide = 'checked';
+		} else {
+			hidden.nothide = 'checked';
+		}
+
+		res.render('edit', {
+			article: results.article,
+			tags: tags,
+			hidden: hidden,
+			body: toMarkdown(results.article.content),
+			logged: logged,
+			title: 'Edit - ' + results.article.title,
+			show: {sidebar: true}
 		});
 	});
 }
@@ -173,6 +170,14 @@ exports.postEdit = function(req, res) {
 		res.send({success: false, err: baduserMsg});
 		return;
 	}
+
+	Article.updateArticleData(req, function(err) {
+		if(err) {
+			res.send({'success':false,'err':err});
+		} else {
+			res.send({'success':true});
+		}
+	})
 }
 
 exports.postImage = function(req, res) {

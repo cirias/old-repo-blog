@@ -37,7 +37,7 @@
           <label for="SelectTag" class="col-sm-1 control-label">Tags</label>
           <div class="col-sm-10 col-sm-offset-1" id="SelectTag">
             <label class="checkbox-inline" ng-repeat="tag in tags">
-              <input type="checkbox" name="tags" value="{{ tag.name }}" checked="{{ tag.checked }}">{{ tag.name }}
+              <input type="checkbox" name="tags" value="{{ tag.name }}" ng-checked="{{ tag.checked }}">{{ tag.name }}
             </label>
             <label class="text-inline">
               <input type="text" class="form-control  input-sm" id="TagText" placeholder="New Tag" ng-model="newTag">
@@ -82,7 +82,7 @@
         <div class="form-group">
           <label for="preview" class="col-sm-1 control-label">Preview</label>
           <div class="col-sm-10 col-sm-offset-1">
-            <div class="blog-post preview" id="preview"></div>
+            <div class="preview" id="preview"></div>
           </div>
         </div>
         <script src="/scripts/javascripts/markdown.min.js"></script>
@@ -101,7 +101,7 @@
     </div>
 </div>
 <script src="/scripts/javascripts/jquery.min.js"></script>
-<script src="/scripts/javascripts/writeFormData.js"></script>
+<script src="/scripts/javascripts/edit.js"></script>
 <script src="/scripts/javascripts/uploadImage.js"></script>
 
 <% include everyone/footer.html %>

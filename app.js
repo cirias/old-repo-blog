@@ -1,3 +1,19 @@
+var log4js = require('log4js');
+log4js.configure({
+	appenders: [
+		{	type: 'console' },
+		{
+			type: 'file',
+			filename: 'logs/access.log',
+			maxLogSize: 1024,
+			backup: 3,
+			category: 'normal'
+		}
+	]
+});
+var logger = log4js.getLogger('normal');
+logger.setLevel('INFO');
+
 var express = require('express')
     , path = require('path')
     , ejs = require('ejs')
@@ -17,6 +33,9 @@ app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.cookieParser('S3CRE7'));
 app.use(express.session());
+if (app.get('env') === 'production') {
+	app.use(log4js.connectLogger(logger, {level: log4js.levels.INFO}));
+}
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'app')));
 
@@ -30,6 +49,7 @@ app.get('/post', admin.getPost);//----------
 app.post('/post', admin.postPost);//----------
 app.get('/write', admin.getWrite);//----------
 app.post('/write', admin.postWrite);
+app.post('/edit', admin.postEdit);
 app.post('/image/upload',admin.postImage);
 app.get('/signin', admin.getLogin);
 app.get('/:title', everyone.getAnArticle);//----------

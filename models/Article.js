@@ -181,12 +181,41 @@ function deleteFolderRecursive(path) {
 //修改
 var articleID = "";
 
-ArticleDAO.prototype.getArticleData = function(req) {
+ArticleDAO.prototype.getArticleData = function(req, callback) {
 	var title = req.params.title;
 	Article.findOne({'title': title}, function(err, article){
 		imageDir = article.dir;
 		articleID = article._id;
-		return article;
+		callback(err, article);
 	});
 }
 
+ArticleDAO.prototype.updateArticleData = function(req, callback) {
+	var err = postVerification(req);
+	if (err) {
+		callback(err);
+		return;
+	}
+
+	if (!articleID) {
+		callback('articleID missing.');
+		return;
+	}
+
+	Article.findOne({'title': req.body.title}, 'title', function(err, article){
+		if (article) {
+			callback('Article title exist.');
+			return;
+		}
+		
+		Article.findByIdAndUpdate(articleID, {
+			title : req.body.title,
+			tags : req.body.tags,
+			hidden : req.body.hidden,
+			content : markdown.toHTML(req.body.content)
+		}, {}, function(err) {
+			callback(err);
+			return;
+		});
+	});
+}
