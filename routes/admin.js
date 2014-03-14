@@ -126,7 +126,6 @@ exports.getEdit = function(req, res) {
 }
 
 exports.getDelete = function(req, res) {
-	var logged = !!req.session.username;
 	if (!req.session.username) {
 		res.send({success: false, err: baduserMsg});
 		return;
@@ -143,7 +142,6 @@ exports.getDelete = function(req, res) {
 
 //管理-POST
 exports.postPost = function(req, res) {
-	var logged = !!req.session.username;
 	if (!req.session.username) {
 		res.send({success: false, err: baduserMsg});
 		return;
@@ -166,7 +164,6 @@ exports.postPost = function(req, res) {
 }
 
 exports.postWrite = function(req, res) {
-	var logged = !!req.session.username;
 	if (!req.session.username) {
 		res.send({success: false, err: baduserMsg});
 		return;
@@ -189,7 +186,6 @@ exports.postWrite = function(req, res) {
 }
 
 exports.postEdit = function(req, res) {
-	var logged = !!req.session.username;
 	if (!req.session.username) {
 		res.send({success: false, err: baduserMsg});
 		return;
@@ -212,7 +208,6 @@ exports.postEdit = function(req, res) {
 }
 
 exports.postImage = function(req, res) {
-	var logged = !!req.session.username;
 	if (!req.session.username) {
 		res.send({success: false, err: baduserMsg});
 		return;
@@ -222,6 +217,21 @@ exports.postImage = function(req, res) {
 			err: err, 
 			path: path
 		});
+	});
+}
+
+exports.getClean = function(req, res) {
+	if (!req.session.username) {
+		res.send({success: false, err: baduserMsg});
+		return;
+	}
+	
+	Article.DeleteUselessDir(function(err) {
+		if(err) {
+			res.send({'success':false,'err':err});
+		} else {
+			res.send({'success':true});
+		}
 	});
 }
 

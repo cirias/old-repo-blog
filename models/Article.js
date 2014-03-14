@@ -275,3 +275,41 @@ ArticleDAO.prototype.updateArticleData = function(req, callback) {
 		});
 	});
 }
+
+//文件管理
+ArticleDAO.prototype.DeleteUselessDir = function(callback) {
+	var dirList = [];
+	var imgdir = './app/public/images/';
+	var files = fs.readdirSync(imgdir);
+
+	files.forEach(function(file) {
+		var pathname = imgdir+file;
+		if (fs.lstatSync(pathname).isDirectory()) {
+			dirList.push(pathname);
+		}
+	});
+
+	Article.find({}, 'dir').exec(function(err, articles) {
+		if (err) {
+			callback(err);
+			return;
+		}
+
+		dirList.forEach(function(dir) {
+			var has = false;
+
+			for (var i = 0; i < articles.length; i++) {
+				if (articles[i].dir == dir) {
+					has = true;
+					break;
+				}
+			}
+
+			if (!has) {
+				deleteFolderRecursive(dir);
+			}
+		});
+
+		callback(err);
+	});
+}

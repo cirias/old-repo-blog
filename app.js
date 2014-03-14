@@ -21,6 +21,9 @@ var express = require('express')
     , everyone = require('./routes/everyone')
     , app = express()
     , server = require('http').createServer(app);
+var session = require('express-session')
+	, RedisStore = require('connect-redis')(session);
+
 
 if (app.get('env') === 'production') {
 	app.use(log4js.connectLogger(logger, {level: log4js.levels.INFO}));
@@ -29,6 +32,16 @@ if (app.get('env') === 'production') {
 		res.removeHeader('X-Powered-By');
 		callback();
 	});
+
+	app.use(express.cookieParser());
+	app.use(express.session({
+		key : 'sirius.sid'
+		secret : 'flufy cat',
+		store : new RedisStore(),
+		cookie : {
+			maxAge : 60000 * 60 * 24
+		}
+	}));
 }
 
 app.set('port', process.env.PORT || 3000);
@@ -39,8 +52,17 @@ app.use(express.favicon(__dirname + '/app/public/images/favicon.ico'));
 app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
-app.use(express.cookieParser('S3CRE7'));
-app.use(express.session());
+
+if (app.get('env') === 'development') {
+	app.use(express.cookieParser());
+	app.use(express.session({
+		key : 'sirius.sid'
+		secret : 'flufy cat',
+		cookie : {
+			maxAge : 60000 * 60 * 24
+		}
+	}));
+}
 
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'app')));
@@ -50,15 +72,11 @@ if (app.get('env') === 'development') {
 }
 
 app.get('/',  everyone.getAllArticles);
-app.post('/', admin.postLogin);
 app.get('/post', admin.getPost);
-app.post('/post', admin.postPost);
 app.get('/write', admin.getWrite);
-app.post('/write', admin.postWrite);
-app.post('/edit', admin.postEdit);
-app.post('/image/upload',admin.postImage);
 app.get('/signin', admin.getLogin);
 app.get('/signout', admin.getLogout);
+app.get('/clean', admin.getClean);
 app.get('/:title', everyone.getAnArticle);
 app.get('/page/:no', everyone.getAllArticles);
 app.get('/tag/:tag', everyone.getTagArticles);
@@ -66,6 +84,14 @@ app.get('/tag/:tag/:no', everyone.getTagArticles);
 app.get('/:title/delete', admin.getDelete);
 app.get('/:title/edit', admin.getEdit);
 app.get('/archive/:year/:month', everyone.getArchiveArticles);
+app.get('/archive/:year/:month/:no', everyone.getArchiveArticles);
+
+app.post('/', admin.postLogin);
+app.post('/post', admin.postPost);
+app.post('/write', admin.postWrite);
+app.post('/edit', admin.postEdit);
+app.post('/image/upload',admin.postImage);
+
 if (process.env.NODE_ENV == 'production') {
 	app.get('*', everyone.notfound);
 }
