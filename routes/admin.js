@@ -24,7 +24,7 @@ exports.getPost = function(req, res) {
 	    	Article.GetArchives(cb);
 	    }
 	}, function(err, results) {
-		    res.render('post', {
+		res.render('post', {
 			tags: results.tags,
 			archives: results.archives,
 			logged: logged,
@@ -51,7 +51,7 @@ exports.getWrite = function(req, res) {
 	    	Article.GetArchives(cb);
 	    }
 	}, function(err, results) {
-		    res.render('write', {
+		res.render('write', {
 			tags: results.tags,
 			archives: results.archives,
 			logged: logged,
@@ -79,6 +79,17 @@ exports.getEdit = function(req, res) {
 	    	Article.GetArchives(cb);
 	    }
 	}, function(err, results) {
+		if(err){
+			res.send({'success': false, 'err': err});
+			return;
+		}
+
+		if(!results.article){
+			res.send({'success': false, 'err': 'Article dosen\'t exist.'});
+			return;
+		}
+
+		var date = results.article.date.toJSON().slice(0,10);
 		var tags = [{}];
 		var hidden = {
 			hide: '',
@@ -103,6 +114,7 @@ exports.getEdit = function(req, res) {
 		res.render('edit', {
 			article: results.article,
 			archives: results.archives,
+			date: date,
 			tags: tags,
 			hidden: hidden,
 			body: toMarkdown(results.article.content),
@@ -183,13 +195,20 @@ exports.postEdit = function(req, res) {
 		return;
 	}
 
-	Article.updateArticleData(req, function(err) {
-		if(err) {
+	async.parallel([
+	    function(cb){
+	    	Tag.Add(req.body.tags, cb);
+	    },
+	    function(cb){
+	    	Article.updateArticleData(req, cb);
+	    }
+	], function(err) {
+	    if(err) {
 			res.send({'success':false,'err':err});
 		} else {
 			res.send({'success':true});
 		}
-	})
+	});
 }
 
 exports.postImage = function(req, res) {
@@ -209,6 +228,11 @@ exports.postImage = function(req, res) {
 //登录
 exports.getLogin = function(req, res) {
 	res.render('signIn');
+}
+
+exports.getLogout = function(req, res) {
+	req.session.username = null;
+	res.redirect('/');
 }
 
 exports.postLogin = function(req, res) {

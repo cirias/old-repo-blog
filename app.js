@@ -22,6 +22,15 @@ var express = require('express')
     , app = express()
     , server = require('http').createServer(app);
 
+if (app.get('env') === 'production') {
+	app.use(log4js.connectLogger(logger, {level: log4js.levels.INFO}));
+	app.use(express.compress());
+	app.use(function(req, res, callback) {
+		res.removeHeader('X-Powered-By');
+		callback();
+	});
+}
+
 app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/app/views');
 app.engine('.html', ejs.__express);
@@ -32,9 +41,7 @@ app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.cookieParser('S3CRE7'));
 app.use(express.session());
-if (app.get('env') === 'production') {
-	app.use(log4js.connectLogger(logger, {level: log4js.levels.INFO}));
-}
+
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'app')));
 
@@ -51,6 +58,7 @@ app.post('/write', admin.postWrite);
 app.post('/edit', admin.postEdit);
 app.post('/image/upload',admin.postImage);
 app.get('/signin', admin.getLogin);
+app.get('/signout', admin.getLogout);
 app.get('/:title', everyone.getAnArticle);
 app.get('/page/:no', everyone.getAllArticles);
 app.get('/tag/:tag', everyone.getTagArticles);
@@ -60,7 +68,7 @@ app.get('/:title/edit', admin.getEdit);
 app.get('/archive/:year/:month', everyone.getArchiveArticles);
 if (process.env.NODE_ENV == 'production') {
 	app.get('*', everyone.notfound);
-}	
+}
 
 server.listen(app.get('port'), function () {
     console.log('Express server listening on port ' + app.get('port'));

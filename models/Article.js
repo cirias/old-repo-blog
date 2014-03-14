@@ -29,10 +29,8 @@ ArticleDAO.prototype.GetPageNum = function(params, callback) {
 	});
 }
 
-ArticleDAO.prototype.SelectOne = function(req, callback){
-	var title = req.params.title;
-
-	Article.findOne({'title': title}, function(err, article){
+ArticleDAO.prototype.SelectOne = function(params, callback){
+	Article.findOne(params, function(err, article){
 		callback(err, article);
 	});
 }
@@ -49,7 +47,7 @@ ArticleDAO.prototype.SelectArray = function(req, params, callback) {
 var monthName = ['January ', 'February ', 'March ', 'April ', 'May ', 'June ', 'July ', 'August ', 'September ', 'October ', 'November ', 'December '];
 
 ArticleDAO.prototype.GetArchives = function(callback) {
-	Article.find({}).sort({date: '-1'}).exec(function(err, articles) {
+	Article.find({}, 'date').sort({date: '-1'}).exec(function(err, articles) {
 		var archives = [];
 		for (var i = 0; i < articles.length; i++) {
 			var month = monthName[articles[i].date.getMonth()];
@@ -99,22 +97,33 @@ ArticleDAO.prototype.AddPost = function(req, callback){
 	}
 
 	Article.findOne({'title': req.body.title}, 'title', function(err, article){
-		if (article) callback('Article title exist.');
-		else if (!req.files.htmlFile.path) callback('Upload file missing.');
-		else{
-			var newArticle = new Article({
-				title : req.body.title,
-				tags : req.body.tags,
-				date : (req.body.date && req.body.date.length !== 0) ? req.body.date : new Date(),
-				hidden : req.body.hidden,
-				content : fs.readFileSync(req.files.htmlFile.path, "utf8"),
-				dir : './app/public/images/'+guid.create()
-			});
-
-			newArticle.save(function(err){
-				callback(err);
-			});
+		if (err) {
+			callback(err);
+			return;
 		}
+
+		if (article) {
+			callback('Article title exist.');
+			return;
+		}
+
+		if (!req.files.htmlFile.path) {
+			callback('Upload file missing.');
+			return;
+		}
+
+		var newArticle = new Article({
+			title : req.body.title,
+			tags : req.body.tags,
+			date : (req.body.date && req.body.date.length !== 0) ? req.body.date : new Date(),
+			hidden : req.body.hidden,
+			content : fs.readFileSync(req.files.htmlFile.path, "utf8"),
+			dir : './app/public/images/'+guid.create()
+		});
+
+		newArticle.save(function(err){
+			callback(err);
+		});
 	});
 }
 
@@ -126,23 +135,31 @@ ArticleDAO.prototype.AddWrite = function(req, callback) {
 	}
 
 	Article.findOne({'title': req.body.title}, 'title', function(err, article){
-		if (article) callback('Article title exist.');
-		else{
-			console.log(markdown.toHTML(req.body.content));
-			var newArticle = new Article({
-				title : req.body.title,
-				tags : req.body.tags,
-				date : (req.body.date && req.body.date.length !== 0) ? req.body.date : new Date(),
-				hidden : req.body.hidden,
-				content : markdown.toHTML(req.body.content),
-				dir : imageDir
-			});
-
-			newArticle.save(function(err){
-				callback(err);
-				imageDir = "";
-			});
+		if (err) {
+			callback(err);
+			return;
 		}
+		
+		if (article) {
+			callback('Article title exist.');
+			return;
+		}
+		
+		var newArticle = new Article({
+			title : req.body.title,
+			tags : req.body.tags,
+			date : (req.body.date && req.body.date.length !== 0) ? req.body.date : new Date(),
+			hidden : req.body.hidden,
+			content : markdown.toHTML(req.body.content),
+			dir : imageDir
+		});
+
+		newArticle.save(function(err){
+			if (!err) {
+				imageDir = "";
+			}
+			callback(err);
+		});
 	});
 }
 
@@ -171,7 +188,6 @@ ArticleDAO.prototype.SaveImage = function(req, callback) {
 
 	is.pipe(os);
     is.on('end', function(err) {
-        console.log('It\'s END');
         fs.unlink(image.path, function() {
             if (err) {
             	callback(err);
@@ -235,13 +251,21 @@ ArticleDAO.prototype.updateArticleData = function(req, callback) {
 	}
 
 	Article.findOne({'title': req.body.title}, 'title', function(err, article){
-		if (article) {
-			callback('Article title exist.');
+		if (err) {
+			callback(err);
 			return;
 		}
-		
+
+		if (article) {
+			if (article._id.toString() != articleID.toString()) {
+				callback('Article title conflict.');
+				return;
+			}
+		}
+
 		Article.findByIdAndUpdate(articleID, {
 			title : req.body.title,
+			date : (req.body.date && req.body.date.length !== 0) ? req.body.date : new Date(),
 			tags : req.body.tags,
 			hidden : req.body.hidden,
 			content : markdown.toHTML(req.body.content)

@@ -34,13 +34,21 @@
         </div>
 
         <div class="form-group">
+          <label for="date" class="col-sm-1 control-label">Date</label>
+          <div class="col-sm-10 col-sm-offset-1" id="date">
+            <input class="form-control" type="date" name="date" id="datePicker" value=<%= date %>>
+            <p class="help-block">Pick date if the artilce was not created on today.</p>
+          </div>
+        </div>
+
+        <div class="form-group">
           <label for="SelectTag" class="col-sm-1 control-label">Tags</label>
           <div class="col-sm-10 col-sm-offset-1" id="SelectTag">
             <label class="checkbox-inline" ng-repeat="tag in tags">
               <input type="checkbox" name="tags" value="{{ tag.name }}" ng-checked="{{ tag.checked }}">{{ tag.name }}
             </label>
             <label class="text-inline">
-              <input type="text" class="form-control  input-sm" id="TagText" placeholder="New Tag" ng-model="newTag">
+              <input class="form-control" type="text" class="form-control  input-sm" id="TagText" placeholder="New Tag" ng-model="newTag">
             </label>
             <label class="btn-inline">
               <button type="button" class="btn btn-default btn-sm" ng-click="addTag()">Add</button>
@@ -53,10 +61,10 @@
           <label for="inputRadio" class="col-sm-1 control-label">Hidden</label>
           <div class="col-sm-10 col-sm-offset-1" class="inputRadio">
             <label class="radio-inline">
-              <input type="radio" name="hidden" id="radioHide" value="TRUE" <%= hidden.hide %>> Hide
+              <input type="radio" name="hidden" id="radioHide" value=ture <%= hidden.hide %>> Hide
             </label>
             <label class="radio-inline">
-              <input type="radio" name="hidden" id="radioNotHide" value="FALSE" <%= hidden.nothide %>> Not Hide
+              <input type="radio" name="hidden" id="radioNotHide" value=false <%= hidden.nothide %>> Not Hide
             </label>
             <p class="help-block">Show the artilce to the world or not.</p>
           </div>

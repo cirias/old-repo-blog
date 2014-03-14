@@ -5,13 +5,18 @@ var User = require('./../models/User.js');
 
 exports.getAllArticles = function(req, res) {
 	var logged = !!req.session.username;
+	var query = {hidden: false};
+	
+	if (logged) {
+		query = {};
+	}
 
 	async.parallel({
 		articles: function(cb){
-			Article.SelectArray(req, {}, cb);
+			Article.SelectArray(req, query, cb);
 		},
 		pageNum: function(cb){
-			Article.GetPageNum({}, cb);
+			Article.GetPageNum(query, cb);
 		},
 		tags: function(cb){
 	    	Tag.SelectAll(cb);
@@ -20,6 +25,11 @@ exports.getAllArticles = function(req, res) {
 	    	Article.GetArchives(cb);
 	    }
 	},function(err, results) {
+		if (err) {
+			res.send('ERROR: 500\n' + err);
+			return;
+		}
+
 		if (!results.articles) {
 			res.render('notfound', {
 				content: 'Not Found 404',
@@ -48,13 +58,18 @@ exports.getAllArticles = function(req, res) {
 
 exports.getTagArticles = function(req, res) {
 	var logged = !!req.session.username;
+	var query = {tags: req.params.tag, hidden: false};
+	
+	if (logged) {
+		query = {tags: req.params.tag};
+	}
 
 	async.parallel({
 		articles: function(cb){
-			Article.SelectArray(req, {tags: req.params.tag}, cb);
+			Article.SelectArray(req, query, cb);
 		},
 		pageNum: function(cb){
-			Article.GetPageNum({tags: req.params.tag}, cb);
+			Article.GetPageNum(query, cb);
 		},
 		tags: function(cb){
 	    	Tag.SelectAll(cb);
@@ -63,6 +78,11 @@ exports.getTagArticles = function(req, res) {
 	    	Article.GetArchives(cb);
 	    }
 	},function(err, results) {
+		if (err) {
+			res.send('ERROR: 500\n' + err);
+			return;
+		}
+
 		if (!results.articles) {
 			res.render('notfound', {
 				content: 'Not Found 404',
@@ -93,13 +113,18 @@ exports.getArchiveArticles = function(req, res) {
 	var logged = !!req.session.username;
 	var start = new Date(req.params.year, req.params.month - 1, 1);
 	var end = new Date(req.params.year, req.params.month, 1);
+	var query = {date: {$gte: start, $lt: end}, hidden: false};
+	
+	if (logged) {
+		query = {date: {$gte: start, $lt: end}};
+	}
 
 	async.parallel({
 		articles: function(cb){
-			Article.SelectArray(req, {date: {$gte: start, $lt: end}}, cb);
+			Article.SelectArray(req, query, cb);
 		},
 		pageNum: function(cb){
-			Article.GetPageNum({date: {$gte: start, $lt: end}}, cb);
+			Article.GetPageNum(query, cb);
 		},
 		tags: function(cb){
 	    	Tag.SelectAll(cb);
@@ -108,6 +133,11 @@ exports.getArchiveArticles = function(req, res) {
 	    	Article.GetArchives(cb);
 	    }
 	},function(err, results) {
+		if (err) {
+			res.send('ERROR: 500\n' + err);
+			return;
+		}
+
 		if (!results.articles) {
 			res.render('notfound', {
 				content: 'Not Found 404',
@@ -136,18 +166,28 @@ exports.getArchiveArticles = function(req, res) {
 
 exports.getAnArticle = function(req, res) {
 	var logged = !!req.session.username;
+	var query = {title: req.params.title, hidden: false};
+
+	if (logged) {
+		query = {title: req.params.title};
+	}
 
 	async.parallel({
 	    tags: function(cb){
 	    	Tag.SelectAll(cb);
 	    },
 	    article: function(cb){
-	    	Article.SelectOne(req, cb);
+	    	Article.SelectOne(query, cb);
 	    },
 	    archives: function(cb){
 	    	Article.GetArchives(cb);
 	    }
 	}, function(err, results) {
+		if (err) {
+			res.send('ERROR: 500\n' + err);
+			return;
+		}
+
 		if (!results.article) {
 			res.render('notfound', {
 				content: 'Not Found 404',
@@ -182,6 +222,11 @@ exports.notfound = function(req, res) {
 	    	Article.GetArchives(cb);
 	    }
 	}, function(err, results) {
+		if (err) {
+			res.send('ERROR: 500\n' + err);
+			return;
+		}
+
 		res.render('notfound', {
 			content: 'Not Found 404',
 			tags: results.tags,
