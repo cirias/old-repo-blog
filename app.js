@@ -35,7 +35,7 @@ if (app.get('env') === 'production') {
 
 	app.use(express.cookieParser());
 	app.use(express.session({
-		key : 'sirius.sid'
+		key : 'sirius.sid',
 		secret : 'flufy cat',
 		store : new RedisStore(),
 		cookie : {
@@ -56,7 +56,7 @@ app.use(express.methodOverride());
 if (app.get('env') === 'development') {
 	app.use(express.cookieParser());
 	app.use(express.session({
-		key : 'sirius.sid'
+		key : 'sirius.sid',
 		secret : 'flufy cat',
 		cookie : {
 			maxAge : 60000 * 60 * 24

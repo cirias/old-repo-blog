@@ -158,7 +158,7 @@ exports.getArchiveArticles = function(req, res) {
 			title: 'Sight of Sirius',
 			logged: logged,
 			currentPage: typeof req.params.no == 'undefined'? 0: req.params.no,
-			action: '/archive/' + req.params.year + '/' + req.params.month + '/',
+			action: '/archive/' + req.params.year + '/' + req.params.month,
 			show: {sidebar: true}
 		});
 	});

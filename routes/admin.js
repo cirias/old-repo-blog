@@ -246,6 +246,8 @@ exports.getLogout = function(req, res) {
 }
 
 exports.postLogin = function(req, res) {
+	// console.log(req.param('remember-me') == undefined)
+
 	User.signin(req, function(err, pass){
 		if(err) {
 			res.send({'success':false,'err':err});
