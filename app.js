@@ -37,7 +37,7 @@ if (app.get('env') === 'production') {
 	app.use(express.session({
 		key : 'sirius.sid',
 		secret : 'flufy cat',
-		store : new RedisStore(),
+		// store : new RedisStore(),
 		cookie : {
 			maxAge : 60000 * 60 * 24
 		}
@@ -92,9 +92,9 @@ app.post('/write', admin.postWrite);
 app.post('/edit', admin.postEdit);
 app.post('/image/upload',admin.postImage);
 
-if (process.env.NODE_ENV == 'production') {
-	app.get('*', everyone.notfound);
-}
+// if (process.env.NODE_ENV == 'production') {
+// 	app.get('*', everyone.notfound);
+// }
 
 server.listen(app.get('port'), function () {
     console.log('Express server listening on port ' + app.get('port'));

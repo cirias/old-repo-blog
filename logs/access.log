@@ -1,0 +1,1 @@
+[2014-03-15 13:15:05.083] [INFO] normal - 127.0.0.1 - - "GET /scripts/angular/controllers.js HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.146 Safari/537.36"
