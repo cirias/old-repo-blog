@@ -14,7 +14,7 @@ log4js.configure({
 var logger = log4js.getLogger('normal');
 logger.setLevel('WARN');
 
-var config = require('./config');
+var config = require('./config').config;
 var express = require('express')
     , path = require('path')
     , ejs = require('ejs')
@@ -27,7 +27,7 @@ var session = require('express-session')
 
 
 if (app.get('env') === 'production') {
-	app.use(log4js.connectLogger(logger, {level: log4js.levels.WARN}));
+	app.use(log4js.connectLogger(logger, {level: log4js.levels.INFO}));
 	app.use(express.compress());
 	app.use(function(req, res, callback) {
 		res.removeHeader('X-Powered-By');
@@ -35,10 +35,12 @@ if (app.get('env') === 'production') {
 	});
 
 	app.use(express.cookieParser());
+	console.log(JSON.stringify(config));
+	console.log(config.SESSION_SECRET);
 	app.use(express.session({
 		key : 'sirius.sid',
 		secret : config.SESSION_SECRET,
-		store : new RedisStore(),
+		// store : new RedisStore(),
 		cookie : {
 			maxAge : 60000 * 60 * 24
 		}
