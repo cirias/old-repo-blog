@@ -14,7 +14,7 @@ log4js.configure({
 var logger = log4js.getLogger('normal');
 logger.setLevel('WARN');
 
-var config = require('/config');
+var config = require('./config');
 var express = require('express')
     , path = require('path')
     , ejs = require('ejs')
