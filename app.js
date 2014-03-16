@@ -44,7 +44,7 @@ if (app.get('env') === 'production') {
 		}
 	}));
 
-	app.set('port', process.env.PORT || 80);
+	app.set('port', process.env.PORT || 8080);
 } else if (app.get('env') === 'development') {
 	app.set('port', process.env.PORT || 3000);
 }
