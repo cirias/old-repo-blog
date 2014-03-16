@@ -14,6 +14,7 @@ log4js.configure({
 var logger = log4js.getLogger('normal');
 logger.setLevel('INFO');
 
+var config = require('/config');
 var express = require('express')
     , path = require('path')
     , ejs = require('ejs')
@@ -36,15 +37,18 @@ if (app.get('env') === 'production') {
 	app.use(express.cookieParser());
 	app.use(express.session({
 		key : 'sirius.sid',
-		secret : 'flufy cat',
+		secret : config.SESSION_SECRET,
 		store : new RedisStore(),
 		cookie : {
 			maxAge : 60000 * 60 * 24
 		}
 	}));
+
+	app.set('port', process.env.PORT || 80);
+} else if (app.get('env') === 'development') {
+	app.set('port', process.env.PORT || 3000);
 }
 
-app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/app/views');
 app.engine('.html', ejs.__express);
 app.set('view engine', 'html'); //替换文件扩展名ejs为html
