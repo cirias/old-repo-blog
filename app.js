@@ -40,7 +40,7 @@ if (app.get('env') === 'production') {
 	app.use(express.session({
 		key : 'sirius.sid',
 		secret : config.SESSION_SECRET,
-		// store : new RedisStore(),
+		store : new RedisStore(),
 		cookie : {
 			maxAge : 60000 * 60 * 24
 		}
