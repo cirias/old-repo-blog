@@ -111,6 +111,10 @@ exports.getEdit = function(req, res) {
 			hidden.nothide = 'checked';
 		}
 
+		if (results.article.oriContent == undefined) {
+			results.article.oriContent = toMarkdown(results.article.content);
+		}
+
 		res.render('edit', {
 			article: results.article,
 			archives: results.archives,
