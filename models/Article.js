@@ -4,6 +4,7 @@ var path = require('path');
 var guid = require('./Guid');
 var mongodb = require('./mongodb');
 var markdown = require( "markdown" ).markdown;
+var toMarkdown = require('to-markdown').toMarkdown;
 
 var Schema = mongodb.mongoose.Schema;
 var ArticleSchema = new Schema(
@@ -13,6 +14,7 @@ var ArticleSchema = new Schema(
         date : {type: Date, default: Date.now},
         dir : String,
         hidden : Boolean,
+        oriContent : String,
         content : String
     }
 );
@@ -112,12 +114,15 @@ ArticleDAO.prototype.AddPost = function(req, callback){
 			return;
 		}
 
+		var htmlContent = fs.readFileSync(req.files.htmlFile.path, "utf8");
+
 		var newArticle = new Article({
 			title : req.body.title,
 			tags : req.body.tags,
 			date : (req.body.date && req.body.date.length !== 0) ? req.body.date : new Date(),
 			hidden : req.body.hidden,
-			content : fs.readFileSync(req.files.htmlFile.path, "utf8"),
+			oriContent : toMarkdown(htmlContent),
+			content : htmlContent,
 			dir : './app/public/images/'+guid.create()
 		});
 
@@ -150,6 +155,7 @@ ArticleDAO.prototype.AddWrite = function(req, callback) {
 			tags : req.body.tags,
 			date : (req.body.date && req.body.date.length !== 0) ? req.body.date : new Date(),
 			hidden : req.body.hidden,
+			oriContent : req.body.content,
 			content : markdown.toHTML(req.body.content),
 			dir : imageDir
 		});
@@ -268,6 +274,7 @@ ArticleDAO.prototype.updateArticleData = function(req, callback) {
 			date : (req.body.date && req.body.date.length !== 0) ? req.body.date : new Date(),
 			tags : req.body.tags,
 			hidden : req.body.hidden,
+			oriContent : req.body.content,
 			content : markdown.toHTML(req.body.content)
 		}, {}, function(err) {
 			callback(err);

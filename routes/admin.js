@@ -117,7 +117,7 @@ exports.getEdit = function(req, res) {
 			date: date,
 			tags: tags,
 			hidden: hidden,
-			body: toMarkdown(results.article.content),
+			body: results.article.oriContent,
 			logged: logged,
 			title: 'Edit - ' + results.article.title,
 			show: {sidebar: true}
