@@ -23,20 +23,23 @@ var ArticleDAO = function(){};
 module.exports = new ArticleDAO();
 
 //查询
-var limition = 5;
+var limition = 5;								//文章流每页最多显示文章数目
 
+//返回页数
 ArticleDAO.prototype.GetPageNum = function(params, callback) {
 	Article.count(params).exec(function(err, count){
 		callback(err, Math.ceil(count/limition));
 	});
 }
 
+//返回一篇文章
 ArticleDAO.prototype.SelectOne = function(params, callback){
 	Article.findOne(params, function(err, article){
 		callback(err, article);
 	});
 }
 
+//返回一组文章
 ArticleDAO.prototype.SelectArray = function(req, params, callback) {
 	var no = req.params.no;
 	no = typeof no !== 'undefined' ? no : 0;
@@ -46,8 +49,10 @@ ArticleDAO.prototype.SelectArray = function(req, params, callback) {
 	});
 }
 
+//月份对应英文名
 var monthName = ['January ', 'February ', 'March ', 'April ', 'May ', 'June ', 'July ', 'August ', 'September ', 'October ', 'November ', 'December '];
 
+//获取归档名称数组
 ArticleDAO.prototype.GetArchives = function(callback) {
 	Article.find({}, 'date').sort({date: '-1'}).exec(function(err, articles) {
 		var archives = [];
@@ -77,8 +82,9 @@ ArticleDAO.prototype.GetArchives = function(callback) {
 }
 
 //新增
-var imageDir = "";
+var imageDir = "";								//当前文章图片目录
 
+//提交验证，返回错误信息
 function postVerification(req) {
 	var err = "";
 	if (!req.body.title) err += 'Missing title.';
@@ -87,10 +93,12 @@ function postVerification(req) {
 	return err;
 }
 
+//初始化提交环境，重置图片目录
 ArticleDAO.prototype.InitPostEnvir = function() {
 	imageDir = "";
 }
 
+//新增文章-提交
 ArticleDAO.prototype.AddPost = function(req, callback){
 	var err = postVerification(req);
 	if (err) {
@@ -132,6 +140,7 @@ ArticleDAO.prototype.AddPost = function(req, callback){
 	});
 }
 
+//新增文章-撰写
 ArticleDAO.prototype.AddWrite = function(req, callback) {
 	var err = postVerification(req);
 	if (err) {
@@ -150,6 +159,10 @@ ArticleDAO.prototype.AddWrite = function(req, callback) {
 			return;
 		}
 		
+		if (!imageDir) {
+			imageDir = './app/public/images/'+guid.create();
+		}
+
 		var newArticle = new Article({
 			title : req.body.title,
 			tags : req.body.tags,
@@ -169,6 +182,7 @@ ArticleDAO.prototype.AddWrite = function(req, callback) {
 	});
 }
 
+//保存图片
 ArticleDAO.prototype.SaveImage = function(req, callback) {
 	var image = req.files.image;
 	var contentType = image.type.split('/')[0];
@@ -204,7 +218,7 @@ ArticleDAO.prototype.SaveImage = function(req, callback) {
     });
 }
 
-//删除
+//删除文章
 ArticleDAO.prototype.Delete = function(req, callback){
 	Article.findOne({title: req.params.title}, function(err, article){
 		if (fs.existsSync(article.dir)) {
@@ -216,6 +230,7 @@ ArticleDAO.prototype.Delete = function(req, callback){
 	})
 }
 
+//删除目录及其下所有内容
 function deleteFolderRecursive(path) {
     var files = [];
     if( fs.existsSync(path) ) {
@@ -233,8 +248,9 @@ function deleteFolderRecursive(path) {
 }
 
 //修改
-var articleID = "";
+var articleID = "";								//当前修改的文章id
 
+//获取用于编辑的文章数据
 ArticleDAO.prototype.getArticleData = function(req, callback) {
 	var title = req.params.title;
 	Article.findOne({'title': title}, function(err, article){
@@ -244,6 +260,7 @@ ArticleDAO.prototype.getArticleData = function(req, callback) {
 	});
 }
 
+//更新编辑后的文章
 ArticleDAO.prototype.updateArticleData = function(req, callback) {
 	var err = postVerification(req);
 	if (err) {
@@ -283,7 +300,7 @@ ArticleDAO.prototype.updateArticleData = function(req, callback) {
 	});
 }
 
-//文件管理
+//删除无效的图片及目录
 ArticleDAO.prototype.DeleteUselessDir = function(callback) {
 	var dirList = [];
 	var imgdir = './app/public/images/';
