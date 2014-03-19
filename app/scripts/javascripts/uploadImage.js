@@ -2,6 +2,10 @@
 
 $('#image').change(function(){
   edited = true;
+
+  var status = function(message) {
+      $('#status').text(message);
+  }
   
   var file = this.files[0];
   var name = file.name;
@@ -51,10 +55,6 @@ function progressHandlingFunction(e){
   if(e.lengthComputable){
       $('#progress').attr({'aria-valuenow':e.loaded,'aria-valuemax':e.total});
   }
-}
-
-function status(message) {
-    $('#status').text(message);
 }
 
 function appendPath(path) {
