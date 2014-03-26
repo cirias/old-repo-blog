@@ -3,6 +3,7 @@ var Article = require('./../models/Article.js');
 var Tag = require('./../models/Tag.js');
 var User = require('./../models/User.js');
 
+//发送主页到客户端
 exports.getAllArticles = function(req, res) {
 	var logged = !!req.session.username;
 	var query = {hidden: false};
@@ -56,6 +57,7 @@ exports.getAllArticles = function(req, res) {
 	});
 }
 
+//根据标签发送文章流到客户端
 exports.getTagArticles = function(req, res) {
 	var logged = !!req.session.username;
 	var query = {tags: req.params.tag, hidden: false};
@@ -109,6 +111,7 @@ exports.getTagArticles = function(req, res) {
 	});
 }
 
+//根据归档发送文章流到客户端
 exports.getArchiveArticles = function(req, res) {
 	var logged = !!req.session.username;
 	var start = new Date(req.params.year, req.params.month - 1, 1);
@@ -164,6 +167,7 @@ exports.getArchiveArticles = function(req, res) {
 	});
 }
 
+//根据标题发送单篇文章到客户端
 exports.getAnArticle = function(req, res) {
 	var logged = !!req.session.username;
 	var query = {title: req.params.title, hidden: false};
@@ -211,6 +215,7 @@ exports.getAnArticle = function(req, res) {
 	});
 }
 
+//发送404页
 exports.notfound = function(req, res) {
 	var logged = !!req.session.username;
 

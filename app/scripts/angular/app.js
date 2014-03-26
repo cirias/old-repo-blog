@@ -8,11 +8,10 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
         {
             templateUrl: '/views/tpl/welcome.html',
             controller: 'WelcomeCtrl'
-        });
-    $routeProvider
+        })
         .when('/post',
         {
-            templateUrl: '/views/tpl/postArticle.html',
+            templateUrl: '/views/tpl/articles.html',
             controller: 'TagsCtrl'
         })
         .otherwise({redirectTo: '/'});

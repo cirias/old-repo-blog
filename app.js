@@ -27,7 +27,7 @@ var session = require('express-session')
 
 
 if (app.get('env') === 'production') {
-	app.use(log4js.connectLogger(logger, {level: log4js.levels.INFO}));
+	app.use(log4js.connectLogger(logger, {level: log4js.levels.WARN}));
 	app.use(express.compress());
 	app.use(function(req, res, callback) {
 		res.removeHeader('X-Powered-By');

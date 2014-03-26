@@ -6,13 +6,15 @@
   <div class="sidebar-module">
     <h4>Tags</h4>
     <ul class="list-unstyled">
-      <li ng-repeat="tag in tags"><a href="/tag/{{ tag.name }}">{{ tag.name }}</li>
+      <li ng-repeat="tag in tags"><a href="/tag/{{ tag.name }}" ng-bind-template="{{ tag.name }}"></a></li>
     </ul>
   </div>
   <div class="sidebar-module">
     <h4>Archives</h4>
     <ol class="list-unstyled">
-      <li ng-repeat="archive in archives"><a href="/archive/{{ archive.year }}/{{ archive.month }}">{{ archive.date }}</li>
+      <li ng-repeat="archive in archives">
+        <a href="/archive/{{ archive.year }}/{{ archive.month }}" ng-bind-template="{{ archive.date }}"></a>
+      </li>
     </ol>
   </div>
   <div class="sidebar-module">

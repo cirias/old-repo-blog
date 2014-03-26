@@ -7,6 +7,7 @@ var User = require('./../models/User.js');
 var baduserMsg = 'You are not authorized to do this.';
 
 //管理-GET
+//发送提交文章页到客户端
 exports.getPost = function(req, res) {
 	var logged = !!req.session.username;
 	if (!req.session.username) {
@@ -34,6 +35,7 @@ exports.getPost = function(req, res) {
 	});
 }
 
+//发送撰写文章页到客户端
 exports.getWrite = function(req, res) {
 	var logged = !!req.session.username;
 	if (!req.session.username) {
@@ -61,6 +63,7 @@ exports.getWrite = function(req, res) {
 	});
 }
 
+//发送编辑文章页到客户端
 exports.getEdit = function(req, res) {
 	var logged = !!req.session.username;
 	if (!req.session.username) {
@@ -129,6 +132,7 @@ exports.getEdit = function(req, res) {
 	});
 }
 
+//删除文章
 exports.getDelete = function(req, res) {
 	if (!req.session.username) {
 		res.send({success: false, err: baduserMsg});
@@ -145,6 +149,7 @@ exports.getDelete = function(req, res) {
 }
 
 //管理-POST
+//保存提交的文章及标签，返回异常
 exports.postPost = function(req, res) {
 	if (!req.session.username) {
 		res.send({success: false, err: baduserMsg});
@@ -167,6 +172,7 @@ exports.postPost = function(req, res) {
 	});
 }
 
+//保存撰写的文章及标签，返回异常
 exports.postWrite = function(req, res) {
 	if (!req.session.username) {
 		res.send({success: false, err: baduserMsg});
@@ -189,6 +195,7 @@ exports.postWrite = function(req, res) {
 	});
 }
 
+//保存编辑的文章及标签，返回异常
 exports.postEdit = function(req, res) {
 	if (!req.session.username) {
 		res.send({success: false, err: baduserMsg});
@@ -211,6 +218,7 @@ exports.postEdit = function(req, res) {
 	});
 }
 
+//保存上传的图片，返回异常
 exports.postImage = function(req, res) {
 	if (!req.session.username) {
 		res.send({success: false, err: baduserMsg});
@@ -224,6 +232,7 @@ exports.postImage = function(req, res) {
 	});
 }
 
+//清理无效的图片文件，返回异常
 exports.getClean = function(req, res) {
 	if (!req.session.username) {
 		res.send({success: false, err: baduserMsg});
@@ -239,16 +248,18 @@ exports.getClean = function(req, res) {
 	});
 }
 
-//登录
+//发送登录页到客户端
 exports.getLogin = function(req, res) {
 	res.render('signIn');
 }
 
+//登出
 exports.getLogout = function(req, res) {
 	req.session.username = null;
 	res.redirect('/');
 }
 
+//执行登录，返回成功与否
 exports.postLogin = function(req, res) {
 	// console.log(req.param('remember-me') == undefined)
 
