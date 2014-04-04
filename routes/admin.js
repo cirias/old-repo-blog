@@ -1,11 +1,14 @@
 var async = require('async');
 var toMarkdown = require('to-markdown').toMarkdown;
+var Recaptcha = require('recaptcha').Recaptcha;
 var Article = require('./../models/Article.js');
 var Tag = require('./../models/Tag.js');
 var User = require('./../models/User.js');
 
 var baduserMsg = 'You are not authorized to do this.';
 
+var PUBLIC_KEY  = '6LcVwvASAAAAANxmyMLK6AxcjazTqrQtjJbm5QyE',
+    PRIVATE_KEY = '6LcVwvASAAAAAPsnMBULLYFmUepcXFfSEdmcNr58';
 //管理-GET
 //发送提交文章页到客户端
 exports.getPost = function(req, res) {
@@ -263,14 +266,30 @@ exports.getLogout = function(req, res) {
 exports.postLogin = function(req, res) {
 	// console.log(req.param('remember-me') == undefined)
 
-	User.signin(req, function(err, pass){
-		if(err) {
-			res.send({'success':false,'err':err});
-		} else {
-			if (pass) {
-				req.session.username = req.body.username;
-				res.redirect('/');
-			} else res.send({'success': false, 'err': 'Bad user'});
-		}
-	});
+	var data = {
+        remoteip:  req.connection.remoteAddress,
+        challenge: req.body.recaptcha_challenge_field,
+        response:  req.body.recaptcha_response_field
+    };
+
+    var recaptcha = new Recaptcha(PUBLIC_KEY, PRIVATE_KEY, data);
+
+    recaptcha.verify(function(success, error_code) {
+        if (success) {
+            User.signin(req, function(err, pass){
+				if(err) {
+					res.send({'success':false,'err':err});
+				} else {
+					if (pass) {
+						req.session.username = req.body.username;
+						res.redirect('/');
+					} else res.send({'success': false, 'err': 'Bad user'});
+				}
+			});
+        }
+        else {
+            // Redisplay the form.
+            res.redirect('/signin');
+        }
+    });
 }
