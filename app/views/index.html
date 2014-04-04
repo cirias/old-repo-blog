@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <title><%= title %></title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Blog of Sirius">
+    <meta name="author" content="Sirius">
+    <link rel="shortcut icon" href="\public\images\favicon.ico">
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/styles/blog.css">
+    <link rel="stylesheet" href="/styles/post.css">
+</head>
+<body ng-app="app">
+    <!-- 导航 -->
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Sirius sight</a>
+        </div>
+        <div class="navbar-collapse collapse" style="height: 1px;">
+            <ul class="nav navbar-nav">
+                <li><a href="/">Home</a></li>
+                <li><a href="#">About</a></li>
+
+                <li><a href="/post">Post</a></li><!-- admin -->
+                <li><a href="/write">Write</a></li><!-- admin -->
+            </ul>
+            <!-- admin -->
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/clean">Clean</a></li>
+                <li><a href="/signout">Log out</a></li>
+            </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+    <div class="container" ng-init="tags = <%=JSON.stringify(tags)%>; archives = <%=JSON.stringify(archives)%>;">
+
+        <!-- 博客标题 -->
+        <div class="blog-header">
+            <h1 class="blog-title">World line</h1>
+            <p class="lead blog-description">EL PSY CONGROO.</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-sm-9 blog-main">
+
+                <!-- ng-view -->
+                <div ng-view></div>
+
+            </div><!-- /.blog-main -->
+
+            <div class="col-sm-2 col-sm-offset-1 blog-sidebar">
+              <div class="sidebar-module sidebar-module-inset">
+                <h4>About</h4>
+                <p>用于记录收获与感想的个人博客……</p>
+              </div>
+              <div class="sidebar-module">
+                <h4>Tags</h4>
+                <ul class="list-unstyled">
+                  <li ng-repeat="tag in tags"><a href="/tag/{{ tag.name }}" ng-bind-template="{{ tag.name }}"></a></li>
+                </ul>
+              </div>
+              <div class="sidebar-module">
+                <h4>Archives</h4>
+                <ol class="list-unstyled">
+                  <li ng-repeat="archive in archives">
+                    <a href="/archive/{{ archive.year }}/{{ archive.month }}" ng-bind-template="{{ archive.date }}"></a>
+                  </li>
+                </ol>
+              </div>
+              <div class="sidebar-module">
+                <h4>Elsewhere</h4>
+                <ol class="list-unstyled">
+                  <li><a href="https://github.com/fhc023">GitHub</a></li>
+                </ol>
+              </div>
+            </div><!-- /.blog-sidebar --> 
+
+        </div><!-- /.row -->
+    </div><!-- /.container -->
+
+<div class="blog-footer">
+  <p>Powered by Sirius.</p>
+  <p>
+    <a href="#">Back to top</a>
+  </p>
+</div>
+
+<script type="text/javascript"
+   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+<script src="/scripts/javascripts/jquery.min.js"></script>
+<script src="/scripts/javascripts/jquery.json.min.js"></script>
+
+<script src="/bower_components/angular/angular.min.js"></script>
+<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="/bower_components/angular-route/angular-route.min.js"></script>
+<script src="/bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+
+<script src="/scripts/angular/app.js"></script>
+<script src="/scripts/angular/controllers.js"></script>
+
+</body>
+</html>

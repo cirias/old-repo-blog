@@ -1,0 +1,82 @@
+<div class="modal fade in" id="errorAlert" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="alert alert-danger">
+      <h4>Error</h4>
+      <p id="error">Something bad happend!</p>
+    </div>
+  </div>
+</div><!-- error alert -->
+
+<div class="modal fade in" id="successAlert" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="alert alert-success">
+      <h4>Success</h4>
+      <p>Good job!</p>
+      <p>
+        <a type="button" class="btn btn-success" href="/">Back home</a>
+      </p>
+    </div>
+  </div>
+</div><!-- success alert -->
+
+<div class="frame">
+  <div class="manage post" id="upload">
+    <form class="form-horizontal" role="form" id="articleForm" enctype="multipart/form-data">
+      <div class="form-group">
+        <label for="InputFile" class="col-sm-1 control-label">File</label>
+        <div class="col-sm-10 col-sm-offset-1">
+          <label class="file-inline">
+            <input type="file" id="InputFile" name="htmlFile" ng-model="article.htmlFile">
+          </label>
+          <label class="btn-inline pull-right">
+            <button id="save" type="submit" class="btn btn-primary" >Upload</button>
+          </label>
+          <p class="help-block">Choose your artilce file.</p>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="inputTitle" class="col-sm-1 control-label">Title</label>
+        <div class="col-sm-10 col-sm-offset-1">
+          <input type="text" class="form-control" id="inputTitle" name="title" placeholder="Title" ng-model="article.title">
+          <p class="help-block">Input the title of this article.</p>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="date" class="col-sm-1 control-label">Date</label>
+        <div class="col-sm-10 col-sm-offset-1" id="date">
+          <input class="form-control" type="date" name="date" id="datePicker" ng-model="article.date">
+          <p class="help-block">Pick date if the artilce was not created on today.</p>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="SelectTag" class="col-sm-1 control-label">Tags</label>
+        <div class="col-sm-10 col-sm-offset-1" id="SelectTag">
+          <label class="checkbox-inline" ng-repeat="tag in article.tags">
+            <input type="checkbox" name="tags" value="{{ tag.name }}">{{ tag.name }}
+          </label>
+          <label class="text-inline">
+            <input class="form-control" type="text" class="form-control  input-sm" id="TagText" placeholder="New Tag" ng-model="newTag" onkeydown="if (event.keyCode==13) {addTag();}">
+          </label>
+          <label class="btn-inline">
+            <button type="button" class="btn btn-default btn-sm" ng-click="addTag()">Add</button>
+          </label>
+          <p class="help-block">Select or create some tags for the artilce.</p>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="inputRadio" class="col-sm-1 control-label">Hidden</label>
+        <div class="col-sm-10 col-sm-offset-1" class="inputRadio">
+          <label class="radio-inline">
+            <input type="radio" name="hidden" id="radioHide" value=ture ng-model="article.hidden"> Hide
+          </label>
+          <label class="radio-inline">
+            <input type="radio" name="hidden" id="radioNotHide" value=false> Not Hide
+          </label>
+          <p class="help-block">Show the artilce to the world or not.</p>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<script src="/scripts/javascripts/jquery.min.js"></script>
+<script src="/scripts/javascripts/postFormData.js"></script>

@@ -1,0 +1,29 @@
+<div class="blog-post" ng-repeat="article in articles">
+    <h2 class="blog-post-title"><a class="blog-post-title" href="/{{ article.title }}">{{ article.title }}</a></h2>
+
+    <!-- admin -->
+    <a class="btn pull-right" ng-show="isAdmin" data-toggle="modal" data-target="#deleteAlert_{{ article._id }}" href="#">Delete</a>
+	<a class="btn pull-right" ng-show="isAdmin" href="{{ getUrl(article._id).edit }}">Edit</a>
+	<div class="modal fade in" id="deleteAlert_{{ article._id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="alert alert-danger">
+			<h4>You wanna delete {{ article.title }}!?</h4>
+			<p>This operation can not be revoked.</p>
+			<p><a type="button" class="btn btn-danger" href="{{ getUrl(article._id).delete }}">Delete it!</a></p>
+	    </div>
+	  </div>
+	</div>
+
+    <p class="blog-post-meta">{{ article.date.toDateString() }}</p>
+	<div ng-bind-html="article.content"></div>
+</div><!-- articleFlow -->
+
+<div class="center">
+	<ul class="pagination">
+		<li ng-disable="pager.previous"><a>&laquo;</a></li>
+		<li ng-show="pager.previousMore"><a>…</a></li>
+		<li ng-repeat="page in pager.pages" class="{{ page.active }}"><a>{{ page.num }}</a></li>
+		<li ng-show="pager.nextMore"><a>…</a></li>
+		<li ng-disable="pager.next"><a>&raquo;</a></li>
+	</ul>
+</div><!-- pager -->

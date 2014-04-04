@@ -1,0 +1,130 @@
+<div class="modal fade in" id="errorAlert" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="alert alert-danger">
+      <h4>Error</h4>
+      <p id="error">Something bad happend!</p>
+    </div>
+  </div>
+</div><!-- error alert -->
+
+<div class="modal fade in" id="successAlert" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="alert alert-success">
+      <h4>Success</h4>
+      <p>Good job!</p>
+      <p>
+        <a type="button" class="btn btn-success" href="/">Back home</a>
+      </p>
+    </div>
+  </div>
+</div><!-- success alert -->
+
+<div class="frame">
+    <div class="manage edit" id="edit">
+      <form class="form-horizontal" id="imageForm" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="image" class="col-sm-1 control-label">Image</label>
+          <div class="col-sm-10 col-sm-offset-1">
+            <label class="file-inline">
+              <input id="image" name="image" type="file" ng-change="uploadImage()" />
+            </label>
+            <label class="p-inline pull-right">
+              <p id="status">status</p>
+            </label>
+            <p class="help-block">Choose your image file.</p>
+          </div>
+        </div>
+      </form>
+
+      <form class="form-horizontal" id="articleForm" role="form" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="inputTitle" class="col-sm-1 control-label">Title</label>
+          <div class="col-sm-10 col-sm-offset-1">
+            <label class="text-inline">
+              <input type="text" class="form-control" id="inputTitle" name="title" placeholder="Title" ng-model="{{ article.title }}">
+            </label>
+            <label class="btn-inline pull-right">
+              <button id="save" type="submit" class="btn btn-primary" >Save</button>
+            </label>
+            <p class="help-block">Input the title of this article.</p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="date" class="col-sm-1 control-label">Date</label>
+          <div class="col-sm-10 col-sm-offset-1" id="date">
+            <input class="form-control" type="date" name="date" id="datePicker" ng-model="{{ article.date }}">
+            <p class="help-block">Pick date if the artilce was not created on today.</p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="SelectTag" class="col-sm-1 control-label">Tags</label>
+          <div class="col-sm-10 col-sm-offset-1" id="SelectTag">
+            <label class="checkbox-inline" ng-repeat="tag in article.tags">
+              <input type="checkbox" name="tags" value="{{ tag.name }}" ng-checked="{{ tag.checked }}">{{ tag.name }}
+            </label>
+            <label class="text-inline">
+              <input class="form-control" type="text" class="form-control  input-sm" id="TagText" placeholder="New Tag" ng-model="newTag" onkeydown="if (event.keyCode==13) {addTag();}">
+            </label>
+            <label class="btn-inline">
+              <button type="button" class="btn btn-default btn-sm" ng-click="addTag()">Add</button>
+            </label>
+            <p class="help-block">Select or create some tags for the artilce.</p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="inputRadio" class="col-sm-1 control-label">Hidden</label>
+          <div class="col-sm-10 col-sm-offset-1" class="inputRadio">
+            <label class="radio-inline">
+              <input type="radio" name="hidden" id="radioHide" value=ture ng-model="article.hidden"> Hide
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="hidden" id="radioNotHide" value=false ng-model="!article.hidden"> Not Hide
+            </label>
+            <p class="help-block">Show the artilce to the world or not.</p>
+          </div>
+        </div>
+
+        <div class="progress" style="display: none;">
+          <div id="progress" class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
+            60%
+          </div>
+        </div>
+        <div>
+          <ul id="imagePathList">
+          </ul>
+        </div>
+
+        <div class="form-group">
+          <label for="text-input" class="col-sm-1 control-label">Body</label>
+          <div class="col-sm-10 col-sm-offset-1">
+            <textarea class="form-control" id="text-input" name="content" oninput="this.editor.update()" rows="10"><%= body %></textarea>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="preview" class="col-sm-1 control-label">Preview</label>
+          <div class="col-sm-10 col-sm-offset-1">
+            <div class="preview" id="preview"></div>
+          </div>
+        </div>
+        <script src="/scripts/javascripts/markdown.min.js"></script>
+        <script>
+          function Editor(input, preview) {
+            this.update = function () {
+              preview.innerHTML = markdown.toHTML(input.value);
+            };
+            input.editor = this;
+            this.update();
+          }
+          var $ = function (id) { return document.getElementById(id); };
+          new Editor($("text-input"), $("preview"));
+        </script>
+      </form>
+    </div>
+</div>
+<script src="/scripts/javascripts/jquery.min.js"></script>
+<script src="/scripts/javascripts/edit.js"></script>
+<script src="/scripts/javascripts/uploadImage.js"></script>
